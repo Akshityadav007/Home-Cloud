@@ -12,6 +12,7 @@ class FileResponse(BaseModel):
     owner_id: int
     folder_id: Optional[int]
     created_at: datetime
+    checksum: str
 
     class Config:
         

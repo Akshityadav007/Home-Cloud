@@ -25,9 +25,9 @@ router = APIRouter()
     response_model=FolderResponse
 )
 def create_folder(
-    payload: CreateFolderRequest,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+        payload: CreateFolderRequest,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
     ):
 
     return FolderService.create_folder(

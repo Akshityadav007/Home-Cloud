@@ -4,15 +4,10 @@ from fastapi import (
 )
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.repositories.file_repository import (
-    FileRepository
-)
-from app.repositories.folder_repository import (
-    FolderRepository
-)
-from app.services.storage_service import (
-    StorageService
-)
+from app.repositories.file_repository import (FileRepository)
+from app.repositories.folder_repository import (FolderRepository)
+from app.services.storage_service import (StorageService)
+from app.storage.utils.file_utils import (calculate_checksum)
 
 
 class FileService:
@@ -25,38 +20,29 @@ class FileService:
         folder_id: int | None
         ):
 
-        if folder_id:
-
-            folder = FolderRepository.get_by_id(
-                db,
-                folder_id
-            )
+        if folder_id is not None:
+            folder = FolderRepository.get_by_id(db,folder_id)
 
             if not folder:
-
-                raise HTTPException(
-                    status_code=404,
-                    detail="Folder not found"
-                )
+                raise HTTPException(status_code=404,detail="Folder not found")
 
             if folder.owner_id != current_user.id:
+                raise HTTPException(status_code=403,detail="Access denied")
 
-                raise HTTPException(
-                    status_code=403,
-                    detail="Access denied"
-                )
-
-        storage_path = (
-            StorageService.provider.save_file(
+        temp_filename = (
+            StorageService.provider.save_temp_file(
                 file.file,
                 file.filename
+                )
             )
-        )
+        
+        checksum, file_size = calculate_checksum(file.file)
 
-        file.file.seek(0)
-
-        file_size = len(
-            file.file.read()
+        storage_path = (
+            StorageService.provider.move_temp_to_final(
+                temp_filename,
+                file.filename
+            )
         )
 
         saved_file = (
@@ -67,7 +53,8 @@ class FileService:
                 mime_type=file.content_type,
                 size_bytes=file_size,
                 owner_id=current_user.id,
-                folder_id=folder_id
+                folder_id=folder_id,
+                checksum=checksum
             )
         )
 
@@ -137,10 +124,10 @@ class FileService:
                 detail="File not found"
             )
 
-        if StorageService.provider.file_exists(file.storage_path):
-            StorageService.provider.delete_file(file.storage_path)
+        # if StorageService.provider.file_exists(file.storage_path):
+        #     StorageService.provider.delete_file(file.storage_path)
 
-        FileRepository.delete_file(db, file)
+        FileRepository.soft_delete_file(db, file)
 
         return {
             "message": "File deleted successfully"
@@ -164,3 +151,27 @@ class FileService:
             current_user.id,
             query
         )
+
+    @staticmethod
+    def upload_multiple_files(
+        db: Session,
+        files: list[UploadFile],
+        current_user: User,
+        folder_id: int | None
+        ):
+
+        uploaded_files = []
+
+        for file in files:
+            uploaded_file = (
+                FileService.upload_file(
+                    db=db,
+                    file=file,
+                    current_user=current_user,
+                    folder_id=folder_id
+                )
+            )
+
+            uploaded_files.append(uploaded_file)
+
+        return uploaded_files

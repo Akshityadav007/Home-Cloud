@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.file import File
+from datetime import datetime, timezone
 
 
 class FileRepository:
@@ -12,15 +13,17 @@ class FileRepository:
         mime_type: str | None,
         size_bytes: int,
         owner_id: int,
-        folder_id: int | None
-    ):
+        folder_id: int | None,
+        checksum: str
+        ):
         file = File(
             original_filename=original_filename,
             storage_path=storage_path,
             mime_type=mime_type,
             size_bytes=size_bytes,
             owner_id=owner_id,
-            folder_id=folder_id
+            folder_id=folder_id,
+            checksum=checksum
         )
 
         db.add(file)
@@ -32,32 +35,41 @@ class FileRepository:
     @staticmethod
     def get_user_files(db: Session, owner_id: int):
         return db.query(File).filter(
-            File.owner_id == owner_id
+            File.owner_id == owner_id,
+            File.deleted_at == None
         ).all()
 
     @staticmethod
     def get_by_id(db: Session, file_id: int):
         return db.query(File).filter(
-            File.id == file_id
+            File.id == file_id, 
+            File.deleted_at == None
         ).first()
     
     @staticmethod
     def get_user_file_by_id(db: Session, file_id: int, owner_id: int):
         return db.query(File).filter(
             File.id == file_id,
-            File.owner_id == owner_id
+            File.owner_id == owner_id, 
+            File.deleted_at == None
         ).first()
 
     @staticmethod
-    def delete_file(db: Session, file: File):
-        db.delete(file)
+    def soft_delete_file(
+        db: Session,
+        file: File
+        ):
+
+        file.deleted_at = (datetime.now(timezone.utc))
         db.commit()
+        db.refresh(file)
 
     @staticmethod
     def get_root_files(db: Session, owner_id: int):
         return db.query(File).filter(
             File.owner_id == owner_id,
-            File.folder_id == None
+            File.folder_id == None, 
+            File.deleted_at == None
         ).all()
 
     @staticmethod
@@ -69,7 +81,8 @@ class FileRepository:
 
         return db.query(File).filter(
             File.owner_id == owner_id,
-            File.folder_id == folder_id
+            File.folder_id == folder_id, 
+            File.deleted_at == None
         ).all()
 
     @staticmethod
@@ -81,5 +94,6 @@ class FileRepository:
 
         return db.query(File).filter(
             File.owner_id == owner_id,
+            File.deleted_at == None,
             File.original_filename.ilike(f"%{query}%")
         ).all()

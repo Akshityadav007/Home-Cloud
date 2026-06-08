@@ -53,6 +53,25 @@ def upload_file(
         folder_id=folder_id
     )
 
+@router.post(
+    "/upload-multiple",
+    response_model=list[FileResponse]
+)
+def upload_multiple_files(
+        files: list[UploadFile] = File(...),
+        folder_id: Optional[int] = Form(None),
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.upload_multiple_files(
+        db=db,
+        files=files,
+        current_user=current_user,
+        folder_id=folder_id
+    )
+
+
 @router.get("/{file_id}/download")
 def download_file(
     file_id: int,
@@ -97,3 +116,7 @@ def search_files(
     ):
 
     return FileService.search_files(db, current_user, q)
+
+
+
+    
