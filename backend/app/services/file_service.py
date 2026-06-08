@@ -2,19 +2,14 @@ from fastapi import (
     HTTPException,
     UploadFile
 )
-
 from sqlalchemy.orm import Session
-
 from app.models.user import User
-
 from app.repositories.file_repository import (
     FileRepository
 )
-
 from app.repositories.folder_repository import (
     FolderRepository
 )
-
 from app.services.storage_service import (
     StorageService
 )
@@ -28,7 +23,7 @@ class FileService:
         file: UploadFile,
         current_user: User,
         folder_id: int | None
-    ):
+        ):
 
         if folder_id:
 
@@ -83,9 +78,70 @@ class FileService:
     def get_user_files(
         db: Session,
         current_user: User
-    ):
+        ):
 
         return FileRepository.get_user_files(
             db,
             current_user.id
         )
+
+    @staticmethod
+    def get_file_download(
+        db: Session,
+        file_id: int,
+        current_user: User
+        ):
+
+        file = FileRepository.get_user_file_by_id(
+            db,
+            file_id,
+            current_user.id
+        )
+
+        if not file:
+            raise HTTPException(
+                status_code=404,
+                detail="File not found"
+            )
+
+        if not StorageService.provider.file_exists(file.storage_path):
+            raise HTTPException(
+                status_code=404,
+                detail="Physical file missing"
+            )
+
+        file_stream = (
+            StorageService.provider.open_file(
+                file.storage_path
+            )
+        )
+
+        return file, file_stream
+    
+    @staticmethod
+    def delete_file(
+        db: Session,
+        file_id: int,
+        current_user: User
+        ):
+
+        file = FileRepository.get_user_file_by_id(
+            db,
+            file_id,
+            current_user.id
+        )
+
+        if not file:
+            raise HTTPException(
+                status_code=404,
+                detail="File not found"
+            )
+
+        if StorageService.provider.file_exists(file.storage_path):
+            StorageService.provider.delete_file(file.storage_path)
+
+        FileRepository.delete_file(db, file)
+
+        return {
+            "message": "File deleted successfully"
+        }

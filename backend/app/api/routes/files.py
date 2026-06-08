@@ -17,8 +17,8 @@ from fastapi import (
     File,
     Form
 )
-
 from typing import Optional
+from fastapi.responses import StreamingResponse
 
 
 router = APIRouter()
@@ -54,4 +54,41 @@ def upload_file(
         file=file,
         current_user=current_user,
         folder_id=folder_id
+    )
+
+@router.get("/{file_id}/download")
+def download_file(
+    file_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    file, file_stream = (
+        FileService.get_file_download(
+            db,
+            file_id,
+            current_user
+        )
+    )
+
+    return StreamingResponse(
+        file_stream,
+        media_type=file.mime_type,
+        headers={
+            "Content-Disposition":
+            f'attachment; filename="{file.original_filename}"'
+        }
+    )
+
+@router.delete("/{file_id}")
+def delete_file(
+    file_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.delete_file(
+        db,
+        file_id,
+        current_user
     )

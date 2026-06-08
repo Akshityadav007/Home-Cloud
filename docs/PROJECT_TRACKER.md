@@ -5,10 +5,10 @@
 # CURRENT STATUS
 
 Project Phase:
-CORE STORAGE IMPLEMENTATION
+CORE STORAGE SYSTEM COMPLETION
 
 Current Focus:
-Secure upload pipeline + file metadata integration
+File lifecycle management + navigation improvements
 
 Last Updated:
 2026-06-08
@@ -113,15 +113,39 @@ Last Updated:
 
 ---
 
+## Download Pipeline
+
+* [x] Secure file download endpoint
+* [x] File retrieval authorization
+* [x] Safe streaming response handling
+* [x] Download response headers
+* [x] File existence validation
+* [x] Ownership-protected downloads
+* [x] StreamingResponse integration
+* [x] Download pipeline tested successfully
+
+---
+
+## File Deletion Pipeline
+
+* [x] Secure file deletion endpoint
+* [x] Ownership validation during deletion
+* [x] Physical file deletion
+* [x] Metadata deletion
+* [x] Missing physical file resilience
+* [x] Deletion pipeline tested successfully
+
+---
+
 # IN PROGRESS
 
-## File Access Layer
+## Navigation & Query Layer
 
-* [ ] Secure file download endpoint
-* [ ] File retrieval authorization
-* [ ] Safe streaming response handling
-* [ ] Download response headers
-* [ ] File existence validation
+* [ ] Folder-specific file listing
+* [ ] Folder navigation APIs
+* [ ] Search APIs
+* [ ] Improved listing responses
+* [ ] File filtering support
 
 ---
 
@@ -130,9 +154,9 @@ Last Updated:
 ## Phase 1 — Core Storage
 
 * [x] File upload
-* [ ] File download
+* [x] File download
 * [x] File metadata management
-* [ ] File deletion
+* [x] File deletion
 * [ ] Search
 
 ---
@@ -149,6 +173,7 @@ Last Updated:
 * [ ] Move storage root path into environment config
 * [ ] Temporary upload staging system
 * [ ] Orphan file cleanup process
+* [ ] Multi-disk storage orchestration
 
 ---
 
@@ -299,6 +324,7 @@ Current State:
 
 * PostgreSQL provides ACID guarantees for metadata
 * Filesystem writes are not yet fully transactional
+* Upload/download/delete lifecycle operational
 
 Future Improvements Planned:
 
@@ -308,16 +334,36 @@ Future Improvements Planned:
 * Orphan file cleanup jobs
 * Checksum validation
 * Recovery workflows after interruption/power loss
+* Soft-delete architecture
+* Background consistency reconciliation jobs
+
+---
+
+# MULTI-USER STORAGE NOTES
+
+Planned Future Features:
+
+* Per-user storage quotas
+* Used storage tracking
+* Dynamic storage allocation
+* Multi-disk expansion support
+* Disk-aware storage provider logic
+
+Current Architecture Readiness:
+
+* Metadata-storage separation already supports future expansion
+* Storage provider abstraction supports future multi-disk orchestration
+* Ownership model already compatible with multi-user quota enforcement
 
 ---
 
 # NEXT IMMEDIATE GOALS
 
-1. Implement secure file download pipeline
-2. Add file retrieval authorization
-3. Add streaming download responses
-4. Add secure file deletion flow
-5. Introduce upload integrity validation
+1. Implement folder-specific file listing
+2. Implement search APIs
+3. Improve navigation APIs
+4. Add upload integrity validation
+5. Improve storage consistency guarantees
 
 ---
 
@@ -332,3 +378,4 @@ Future Improvements Planned:
 * Physical file storage separated from metadata layer
 * Flutter selected as long-term frontend direction
 * Storage provider abstraction introduced before uploads
+* File operations secured through ownership-based authorization
