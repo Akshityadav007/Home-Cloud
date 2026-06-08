@@ -145,3 +145,22 @@ class FileService:
         return {
             "message": "File deleted successfully"
         }
+
+    @staticmethod
+    def search_files(
+        db: Session,
+        current_user: User,
+        query: str
+        ):
+
+        if not query.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Search query cannot be empty"
+            )
+
+        return FileRepository.search_files(
+            db,
+            current_user.id,
+            query
+        )

@@ -1,6 +1,10 @@
 from fastapi import (
     APIRouter,
-    Depends
+    Depends,
+    Query,
+    UploadFile,
+    File,
+    Form
 )
 from sqlalchemy.orm import Session
 from app.api.dependencies.database import get_db
@@ -9,13 +13,6 @@ from app.models.user import User
 from app.schemas.file import FileResponse
 from app.services.file_service import (
     FileService
-)
-from fastapi import (
-    APIRouter,
-    Depends,
-    UploadFile,
-    File,
-    Form
 )
 from typing import Optional
 from fastapi.responses import StreamingResponse
@@ -87,8 +84,16 @@ def delete_file(
     current_user: User = Depends(get_current_user)
     ):
 
-    return FileService.delete_file(
-        db,
-        file_id,
-        current_user
-    )
+    return FileService.delete_file(db, file_id, current_user)
+
+@router.get(
+    "/search",
+    response_model=list[FileResponse]
+)
+def search_files(
+    q: str = Query(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.search_files(db, current_user, q)

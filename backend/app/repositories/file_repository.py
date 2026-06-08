@@ -71,3 +71,15 @@ class FileRepository:
             File.owner_id == owner_id,
             File.folder_id == folder_id
         ).all()
+
+    @staticmethod
+    def search_files(
+        db: Session,
+        owner_id: int,
+        query: str
+        ):
+
+        return db.query(File).filter(
+            File.owner_id == owner_id,
+            File.original_filename.ilike(f"%{query}%")
+        ).all()

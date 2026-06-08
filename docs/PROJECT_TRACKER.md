@@ -5,10 +5,10 @@
 # CURRENT STATUS
 
 Project Phase:
-CORE STORAGE SYSTEM COMPLETION
+CORE STORAGE SYSTEM STABILIZATION
 
 Current Focus:
-File lifecycle management + navigation improvements
+Navigation, search, and storage consistency improvements
 
 Last Updated:
 2026-06-08
@@ -65,6 +65,8 @@ Last Updated:
 * [x] List folders endpoint
 * [x] Parent-child folder validation
 * [x] Folder authentication protection
+* [x] Folder contents API
+* [x] Root-level navigation API
 
 ---
 
@@ -137,15 +139,29 @@ Last Updated:
 
 ---
 
-# IN PROGRESS
-
 ## Navigation & Query Layer
 
-* [ ] Folder-specific file listing
-* [ ] Folder navigation APIs
-* [ ] Search APIs
-* [ ] Improved listing responses
-* [ ] File filtering support
+* [x] Folder-specific file listing
+* [x] Folder navigation APIs
+* [x] Root-level navigation APIs
+* [x] Combined folder/file response model
+* [x] File search APIs
+* [x] Case-insensitive filename search
+* [x] User-isolated search results
+* [x] Query validation
+* [x] Improved virtual filesystem navigation
+
+---
+
+# IN PROGRESS
+
+## Storage Reliability & Integrity
+
+* [ ] Upload integrity validation
+* [ ] Temporary upload staging
+* [ ] Storage consistency improvements
+* [ ] Atomic file movement strategy
+* [ ] Orphan file reconciliation planning
 
 ---
 
@@ -157,7 +173,7 @@ Last Updated:
 * [x] File download
 * [x] File metadata management
 * [x] File deletion
-* [ ] Search
+* [x] Search
 
 ---
 
@@ -174,6 +190,7 @@ Last Updated:
 * [ ] Temporary upload staging system
 * [ ] Orphan file cleanup process
 * [ ] Multi-disk storage orchestration
+* [ ] Background consistency repair jobs
 
 ---
 
@@ -199,6 +216,7 @@ Last Updated:
 * [ ] Folder navigation UI
 * [ ] Drag-and-drop uploads
 * [ ] Offline caching strategy
+* [ ] Mobile-first filesystem UX
 
 ---
 
@@ -325,6 +343,7 @@ Current State:
 * PostgreSQL provides ACID guarantees for metadata
 * Filesystem writes are not yet fully transactional
 * Upload/download/delete lifecycle operational
+* Navigation and search APIs operational
 
 Future Improvements Planned:
 
@@ -359,11 +378,11 @@ Current Architecture Readiness:
 
 # NEXT IMMEDIATE GOALS
 
-1. Implement folder-specific file listing
-2. Implement search APIs
-3. Improve navigation APIs
-4. Add upload integrity validation
-5. Improve storage consistency guarantees
+1. Add upload integrity validation
+2. Introduce checksum architecture
+3. Improve storage consistency guarantees
+4. Introduce temporary upload staging
+5. Begin upload resiliency improvements
 
 ---
 
@@ -379,3 +398,4 @@ Current Architecture Readiness:
 * Flutter selected as long-term frontend direction
 * Storage provider abstraction introduced before uploads
 * File operations secured through ownership-based authorization
+* Navigation APIs modeled after real filesystem traversal
