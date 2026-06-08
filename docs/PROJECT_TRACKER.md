@@ -5,10 +5,10 @@
 # CURRENT STATUS
 
 Project Phase:
-CORE STORAGE SYSTEM STABILIZATION
+CORE STORAGE RELIABILITY LAYER
 
 Current Focus:
-Navigation, search, and storage consistency improvements
+Soft-delete architecture + upload consistency hardening
 
 Last Updated:
 2026-06-08
@@ -73,11 +73,16 @@ Last Updated:
 ## Storage Preparation
 
 * [x] Storage abstraction architecture planned
+
 * [x] Physical storage directory structure initialized
+
 * [x] Separation established between:
+
   * application storage code
   * physical file storage
+
 * [x] Storage path auto-creation logic added
+
 * [x] Path resolution stabilized using `Path(__file__).resolve()`
 
 ---
@@ -93,6 +98,7 @@ Last Updated:
 * [x] File service layer created
 * [x] File routes initialized
 * [x] File ownership model established
+* [x] Checksum-based integrity tracking added
 
 ---
 
@@ -107,6 +113,20 @@ Last Updated:
 * [x] MIME type persistence
 * [x] File size persistence
 * [x] Upload pipeline tested successfully
+* [x] Temporary upload staging introduced
+* [x] Atomic-ish file move strategy introduced
+* [x] SHA256 checksum generation implemented
+* [x] Streamed checksum calculation implemented
+
+---
+
+## Multi-file Upload System
+
+* [x] Multi-file upload endpoint
+* [x] Sequential upload processing
+* [x] Shared folder upload support
+* [x] Upload logic reuse through service abstraction
+* [x] Batch multipart upload support
 
 ---
 
@@ -123,14 +143,15 @@ Last Updated:
 
 ---
 
-## File Deletion Pipeline
+## Soft Delete Architecture
 
-* [x] Secure file deletion endpoint
-* [x] Ownership validation during deletion
-* [x] Physical file deletion
-* [x] Metadata deletion
-* [x] Missing physical file resilience
-* [x] Deletion pipeline tested successfully
+* [x] `deleted_at` strategy introduced
+* [x] Logical deletion implemented
+* [x] Deleted file filtering added to repositories
+* [x] Search exclusion for deleted files
+* [x] Navigation exclusion for deleted files
+* [x] Download blocking for deleted files
+* [x] Soft-delete lifecycle tested successfully
 
 ---
 
@@ -150,13 +171,13 @@ Last Updated:
 
 # IN PROGRESS
 
-## Storage Reliability & Integrity
+## Storage Reliability & Recovery
 
-* [ ] Upload integrity validation
-* [ ] Temporary upload staging
-* [ ] Storage consistency improvements
-* [ ] Atomic file movement strategy
+* [ ] Upload integrity verification
 * [ ] Orphan file reconciliation planning
+* [ ] Background cleanup architecture
+* [ ] Upload interruption recovery strategy
+* [ ] Soft-delete cleanup lifecycle
 
 ---
 
@@ -169,6 +190,7 @@ Last Updated:
 * [x] File metadata management
 * [x] File deletion
 * [x] Search
+* [x] Multi-file uploads
 
 ---
 
@@ -176,16 +198,16 @@ Last Updated:
 
 * [ ] Chunked uploads
 * [ ] Resumable uploads
-* [ ] File checksums
+* [x] File checksums
 * [ ] Storage quotas
-* [ ] Multi-file uploads
 * [ ] Storage cleanup jobs
 * [ ] Thumbnail generation
 * [ ] Move storage root path into environment config
-* [ ] Temporary upload staging system
+* [x] Temporary upload staging system
 * [ ] Orphan file cleanup process
 * [ ] Multi-disk storage orchestration
 * [ ] Background consistency repair jobs
+* [ ] Trash recovery system
 
 ---
 
@@ -212,6 +234,7 @@ Last Updated:
 * [ ] Drag-and-drop uploads
 * [ ] Offline caching strategy
 * [ ] Mobile-first filesystem UX
+* [ ] Trash bin UI
 
 ---
 
@@ -326,7 +349,7 @@ Future:
 * Storage corruption handling
 * Backup strategy not yet implemented
 * Physical disk failure
-* File consistency guarantees not yet implemented
+* File consistency guarantees not yet fully transactional
 * Upload interruption consistency handling pending
 
 ---
@@ -336,20 +359,20 @@ Future:
 Current State:
 
 * PostgreSQL provides ACID guarantees for metadata
-* Filesystem writes are not yet fully transactional
-* Upload/download/delete lifecycle operational
+* Filesystem writes are partially hardened
+* Upload staging implemented
+* Atomic-ish move strategy implemented
+* Soft-delete lifecycle operational
 * Navigation and search APIs operational
 
 Future Improvements Planned:
 
-* Temporary upload staging
-* Atomic file move operations
 * Upload integrity verification
 * Orphan file cleanup jobs
-* Checksum validation
 * Recovery workflows after interruption/power loss
-* Soft-delete architecture
 * Background consistency reconciliation jobs
+* Trash cleanup scheduler
+* Upload retry architecture
 
 ---
 
@@ -373,11 +396,11 @@ Current Architecture Readiness:
 
 # NEXT IMMEDIATE GOALS
 
-1. Add upload integrity validation
-2. Introduce checksum architecture
-3. Improve storage consistency guarantees
-4. Introduce temporary upload staging
-5. Begin upload resiliency improvements
+1. Batch file operations
+2. Trash recovery system
+3. Background cleanup architecture
+4. Upload recovery improvements
+5. Begin Flutter client initialization
 
 ---
 
@@ -394,3 +417,4 @@ Current Architecture Readiness:
 * Storage provider abstraction introduced before uploads
 * File operations secured through ownership-based authorization
 * Navigation APIs modeled after real filesystem traversal
+* Soft-delete chosen over immediate hard delete
