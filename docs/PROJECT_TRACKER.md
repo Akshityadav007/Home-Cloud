@@ -73,16 +73,11 @@ Last Updated:
 ## Storage Preparation
 
 * [x] Storage abstraction architecture planned
-
 * [x] Physical storage directory structure initialized
-
 * [x] Separation established between:
-
   * application storage code
   * physical file storage
-
 * [x] Storage path auto-creation logic added
-
 * [x] Path resolution stabilized using `Path(__file__).resolve()`
 
 ---
