@@ -1,1 +1,2 @@
 Generic single-database configuration.
+- Remember to import file path into env.py to create the migration

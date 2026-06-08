@@ -20,6 +20,8 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from app.core.database import Base
 from app.models.user import User
+from app.models.folder import Folder 
+from app.models.file import File
 
 target_metadata = Base.metadata
 

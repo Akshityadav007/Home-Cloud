@@ -17,3 +17,8 @@ node_modules/
 
 # Logs
 *.log
+
+# Storage
+storage/files/*
+storage/temp/*
+storage/chunks/*
