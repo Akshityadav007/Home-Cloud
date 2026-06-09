@@ -22,3 +22,6 @@ node_modules/
 storage/files/*
 storage/temp/*
 storage/chunks/*
+
+
+steps_to_start_the_project.txt
