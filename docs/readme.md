@@ -1,6 +1,9 @@
 To run the website use:
 1) Frontend - cd frontend > npm run dev
 2) Backend - cd backend > uvicorn app.main:app --reload
+
+To generate JWT secret key use:
+- python -c "import secrets; print(secrets.token_hex(32))"
 -------------------------------------------------------------------------------------
 
 # Cloud Storage System

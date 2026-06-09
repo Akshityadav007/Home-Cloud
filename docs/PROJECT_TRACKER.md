@@ -5,10 +5,10 @@
 # CURRENT STATUS
 
 Project Phase:
-STORAGE LIFECYCLE & RECOVERY LAYER
+STORAGE LIFECYCLE & TESTING FOUNDATION
 
 Current Focus:
-Batch operations + recovery lifecycle foundation
+Lifecycle correctness + regression protection + recursive lifecycle planning
 
 Last Updated:
 2026-06-08
@@ -25,6 +25,8 @@ Last Updated:
 * [x] Docker Compose configured
 * [x] PostgreSQL container setup
 * [x] Redis container setup
+* [x] Docker networking and container conflict issues resolved
+* [x] Timezone configuration stabilized
 
 ---
 
@@ -41,6 +43,8 @@ Last Updated:
 * [x] Dependency injection setup
 * [x] Repository layer introduced
 * [x] Service layer introduced
+* [x] Model import registration fixed for Alembic
+* [x] Migration defaults stabilized for non-null columns
 
 ---
 
@@ -53,6 +57,7 @@ Last Updated:
 * [x] Protected route dependency
 * [x] Current authenticated user resolution (`/me`)
 * [x] Postman authentication workflow tested
+* [x] Direct bcrypt integration implemented
 
 ---
 
@@ -99,6 +104,7 @@ Last Updated:
 * [x] File routes initialized
 * [x] File ownership model established
 * [x] Checksum-based integrity tracking added
+* [x] Temporary upload staging architecture introduced
 
 ---
 
@@ -143,28 +149,6 @@ Last Updated:
 
 ---
 
-## Soft Delete Architecture
-
-* [x] `deleted_at` strategy introduced
-* [x] Logical deletion implemented
-* [x] Deleted file filtering added to repositories
-* [x] Search exclusion for deleted files
-* [x] Navigation exclusion for deleted files
-* [x] Download blocking for deleted files
-* [x] Soft-delete lifecycle tested successfully
-
----
-
-## Batch File Operations
-
-* [x] Batch soft-delete endpoint
-* [x] Partial success deletion handling
-* [x] Multi-file ownership validation
-* [x] Batch deletion response model
-* [x] Batch deletion lifecycle tested
-
----
-
 ## Navigation & Query Layer
 
 * [x] Folder-specific file listing
@@ -179,15 +163,60 @@ Last Updated:
 
 ---
 
+## Storage Lifecycle System
+
+* [x] `deleted_at` strategy introduced
+* [x] `is_permanent_delete` strategy introduced
+* [x] Logical deletion implemented
+* [x] Trash recovery architecture implemented
+* [x] Restore lifecycle implemented
+* [x] Permanent delete lifecycle implemented
+* [x] Trash visibility filtering implemented
+* [x] Download blocking for deleted files
+* [x] Search exclusion for deleted files
+* [x] Navigation exclusion for deleted files
+* [x] Lifecycle-aware repository queries introduced
+* [x] Soft-delete lifecycle tested successfully
+
+---
+
+## Batch File Operations
+
+* [x] Batch soft-delete endpoint
+* [x] Batch restore endpoint
+* [x] Batch permanent-delete endpoint
+* [x] Partial success lifecycle handling
+* [x] Multi-file ownership validation
+* [x] Batch lifecycle response models
+* [x] Batch deletion lifecycle tested
+* [x] Batch recovery lifecycle tested
+
+---
+
+## Testing Foundation
+
+* [x] Pytest initialized
+* [x] Test directory architecture created
+* [x] FastAPI TestClient integrated
+* [x] Isolated SQLite testing database introduced
+* [x] Dependency override strategy implemented
+* [x] Authentication tests created
+* [x] Login lifecycle tests created
+* [x] Database reset strategy implemented
+* [x] Initial regression testing foundation established
+
+---
+
 # IN PROGRESS
 
-## Storage Recovery & Cleanup Lifecycle
+## Recursive Lifecycle Architecture
 
-* [ ] Trash recovery architecture
-* [ ] Background cleanup architecture
-* [ ] Upload interruption recovery strategy
-* [ ] Orphan file reconciliation planning
-* [ ] Soft-delete cleanup lifecycle
+* [ ] Folder deletion lifecycle planning
+* [ ] Recursive traversal helpers
+* [ ] Recursive restore lifecycle
+* [ ] Recursive permanent delete lifecycle
+* [ ] Folder trash architecture
+* [ ] Recursive ownership validation
 
 ---
 
@@ -202,6 +231,9 @@ Last Updated:
 * [x] Search
 * [x] Multi-file uploads
 * [x] Batch file deletion
+* [x] Trash recovery
+* [x] Batch restore
+* [x] Permanent delete lifecycle
 
 ---
 
@@ -213,15 +245,15 @@ Last Updated:
 * [ ] Storage quotas
 * [ ] Storage cleanup jobs
 * [ ] Thumbnail generation
-* [ ] Move storage root path into environment config
+* [ ] Move storage root path into centralized config
 * [x] Temporary upload staging system
 * [ ] Orphan file cleanup process
 * [ ] Multi-disk storage orchestration
 * [ ] Background consistency repair jobs
-* [ ] Trash recovery system
 * [ ] Multiple file download system
 * [ ] Zip archive streaming
 * [ ] Temporary archive cleanup jobs
+* [ ] Recursive folder lifecycle engine
 
 ---
 
@@ -235,6 +267,7 @@ Last Updated:
 * [ ] Rate limiting
 * [ ] Upload validation
 * [ ] Malware scanning
+* [ ] JWT secret hardening
 
 ---
 
@@ -249,6 +282,7 @@ Last Updated:
 * [ ] Offline caching strategy
 * [ ] Mobile-first filesystem UX
 * [ ] Trash bin UI
+* [ ] Batch selection UX
 
 ---
 
@@ -266,11 +300,11 @@ Last Updated:
 
 # NEXT IMMEDIATE GOALS
 
-1. Trash recovery system
-2. Restore deleted files endpoint
-3. Background cleanup architecture
-4. Upload recovery improvements
-5. Begin Flutter client initialization
+1. Lifecycle regression tests
+2. Upload lifecycle tests
+3. Ownership isolation tests
+4. Recursive folder lifecycle architecture
+5. Background cleanup workers
 
 ---
 
@@ -289,3 +323,6 @@ Last Updated:
 * Navigation APIs modeled after real filesystem traversal
 * Soft-delete chosen over immediate hard delete
 * Batch operations designed with partial-success semantics
+* Permanent delete implemented as deferred cleanup lifecycle
+* Testing infrastructure introduced before recursive lifecycle support
+* SQLite selected for initial regression testing foundation
