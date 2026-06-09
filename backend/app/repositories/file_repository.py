@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 from app.models.file import File
 from datetime import datetime, timezone
 
-
 class FileRepository:
 
     @staticmethod
@@ -16,6 +15,7 @@ class FileRepository:
         folder_id: int | None,
         checksum: str
         ):
+
         file = File(
             original_filename=original_filename,
             storage_path=storage_path,
@@ -36,22 +36,30 @@ class FileRepository:
     def get_user_files(db: Session, owner_id: int):
         return db.query(File).filter(
             File.owner_id == owner_id,
-            File.deleted_at == None
-        ).all()
+            File.deleted_at.is_(None)
+            ).all()
 
     @staticmethod
-    def get_by_id(db: Session, file_id: int):
-        return db.query(File).filter(
-            File.id == file_id, 
-            File.deleted_at == None
-        ).first()
-    
-    @staticmethod
-    def get_user_file_by_id(db: Session, file_id: int, owner_id: int):
+    def get_by_id(
+        db: Session,
+        file_id: int
+        ):
+
         return db.query(File).filter(
             File.id == file_id,
-            File.owner_id == owner_id, 
-            File.deleted_at == None
+            File.deleted_at.is_(None)
+        ).first()
+
+    @staticmethod
+    def get_user_file_by_id(
+        db: Session,
+        file_id: int,
+        owner_id: int
+        ):
+        return db.query(File).filter(
+            File.id == file_id,
+            File.owner_id == owner_id,
+            File.deleted_at.is_(None)
         ).first()
 
     @staticmethod
@@ -60,16 +68,20 @@ class FileRepository:
         file: File
         ):
 
-        file.deleted_at = (datetime.now(timezone.utc))
+        file.deleted_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(file)
 
     @staticmethod
-    def get_root_files(db: Session, owner_id: int):
+    def get_root_files(
+        db: Session,
+        owner_id: int
+        ):
+
         return db.query(File).filter(
             File.owner_id == owner_id,
-            File.folder_id == None, 
-            File.deleted_at == None
+            File.folder_id.is_(None),
+            File.deleted_at.is_(None)
         ).all()
 
     @staticmethod
@@ -81,8 +93,8 @@ class FileRepository:
 
         return db.query(File).filter(
             File.owner_id == owner_id,
-            File.folder_id == folder_id, 
-            File.deleted_at == None
+            File.folder_id == folder_id,
+            File.deleted_at.is_(None)
         ).all()
 
     @staticmethod
@@ -94,6 +106,58 @@ class FileRepository:
 
         return db.query(File).filter(
             File.owner_id == owner_id,
-            File.deleted_at == None,
+            File.deleted_at.is_(None),
             File.original_filename.ilike(f"%{query}%")
         ).all()
+
+    @staticmethod
+    def get_deleted_files(
+        db: Session,
+        owner_id: int
+        ):
+
+        return db.query(File).filter(
+            File.owner_id == owner_id,
+            File.deleted_at.is_not(None),
+            File.is_permanent_delete == False
+        ).all()
+
+    @staticmethod
+    def get_deleted_file_by_id(
+        db: Session,
+        file_id: int,
+        owner_id: int
+        ):
+
+        return db.query(File).filter(
+            File.id == file_id,
+            File.owner_id == owner_id,
+            File.deleted_at.is_not(None),
+            File.is_permanent_delete == False
+        ).first()
+
+    @staticmethod
+    def restore_file(
+        db: Session,
+        file: File
+        ):
+
+        file.deleted_at = None
+        file.is_permanent_delete = False
+        db.commit()
+        db.refresh(file)
+
+        return file
+
+    @staticmethod
+    def mark_permanent_delete(
+        db: Session,
+        file: File
+        ):
+
+        file.deleted_at = datetime.now(timezone.utc)
+        file.is_permanent_delete = True
+        db.commit()
+        db.refresh(file)
+
+        return file

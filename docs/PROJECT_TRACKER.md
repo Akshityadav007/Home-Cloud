@@ -5,10 +5,10 @@
 # CURRENT STATUS
 
 Project Phase:
-CORE STORAGE RELIABILITY LAYER
+STORAGE LIFECYCLE & RECOVERY LAYER
 
 Current Focus:
-Soft-delete architecture + upload consistency hardening
+Batch operations + recovery lifecycle foundation
 
 Last Updated:
 2026-06-08
@@ -155,6 +155,16 @@ Last Updated:
 
 ---
 
+## Batch File Operations
+
+* [x] Batch soft-delete endpoint
+* [x] Partial success deletion handling
+* [x] Multi-file ownership validation
+* [x] Batch deletion response model
+* [x] Batch deletion lifecycle tested
+
+---
+
 ## Navigation & Query Layer
 
 * [x] Folder-specific file listing
@@ -171,12 +181,12 @@ Last Updated:
 
 # IN PROGRESS
 
-## Storage Reliability & Recovery
+## Storage Recovery & Cleanup Lifecycle
 
-* [ ] Upload integrity verification
-* [ ] Orphan file reconciliation planning
+* [ ] Trash recovery architecture
 * [ ] Background cleanup architecture
 * [ ] Upload interruption recovery strategy
+* [ ] Orphan file reconciliation planning
 * [ ] Soft-delete cleanup lifecycle
 
 ---
@@ -191,6 +201,7 @@ Last Updated:
 * [x] File deletion
 * [x] Search
 * [x] Multi-file uploads
+* [x] Batch file deletion
 
 ---
 
@@ -208,6 +219,9 @@ Last Updated:
 * [ ] Multi-disk storage orchestration
 * [ ] Background consistency repair jobs
 * [ ] Trash recovery system
+* [ ] Multiple file download system
+* [ ] Zip archive streaming
+* [ ] Temporary archive cleanup jobs
 
 ---
 
@@ -250,154 +264,10 @@ Last Updated:
 
 ---
 
-# CURRENT ARCHITECTURE
-
-## Backend
-
-* FastAPI
-* SQLAlchemy
-* PostgreSQL
-* Redis
-* Alembic
-* JWT Authentication
-
----
-
-## Frontend Direction
-
-* Flutter planned as primary client platform
-* Mobile-first architecture
-* API-first backend design
-
----
-
-## Infrastructure
-
-* Docker Compose
-* Local filesystem storage
-* Raspberry Pi deployment target
-* Future encrypted SSD storage
-
----
-
-# ARCHITECTURAL PRINCIPLES
-
-* Modular monolith architecture
-* Storage separated from metadata
-* Local filesystem first
-* Infrastructure simplicity prioritized
-* Avoid premature distributed systems complexity
-* Separate application code from physical user data
-* Repository-service architecture enforced
-* API-first design for long-term mobile compatibility
-
----
-
-# STORAGE ARCHITECTURE
-
-## Application Storage Layer
-
-Location:
-`backend/app/storage/`
-
-Purpose:
-
-* Storage provider interfaces
-* Local storage provider implementation
-* Future storage backends
-* File handling utilities
-
----
-
-## Physical Storage Layer
-
-Location:
-`root/storage/`
-
-Purpose:
-
-* Actual uploaded files
-* Upload chunks
-* Temporary files
-* Generated thumbnails
-
----
-
-# FUTURE HARDWARE PLAN
-
-Initial:
-
-* Raspberry Pi
-* Single encrypted SSD
-* Single user
-
-Future:
-
-* Multi-user
-* User-specific storage quotas
-* Additional external storage devices
-* Dedicated NAS hardware
-* RAID/ZFS
-* Offsite backups
-
----
-
-# KNOWN RISKS
-
-* Raspberry Pi IO bottlenecks
-* Sync engine complexity
-* Storage corruption handling
-* Backup strategy not yet implemented
-* Physical disk failure
-* File consistency guarantees not yet fully transactional
-* Upload interruption consistency handling pending
-
----
-
-# CONSISTENCY & DURABILITY NOTES
-
-Current State:
-
-* PostgreSQL provides ACID guarantees for metadata
-* Filesystem writes are partially hardened
-* Upload staging implemented
-* Atomic-ish move strategy implemented
-* Soft-delete lifecycle operational
-* Navigation and search APIs operational
-
-Future Improvements Planned:
-
-* Upload integrity verification
-* Orphan file cleanup jobs
-* Recovery workflows after interruption/power loss
-* Background consistency reconciliation jobs
-* Trash cleanup scheduler
-* Upload retry architecture
-
----
-
-# MULTI-USER STORAGE NOTES
-
-Planned Future Features:
-
-* Per-user storage quotas
-* Used storage tracking
-* Dynamic storage allocation
-* Multi-disk expansion support
-* Disk-aware storage provider logic
-
-Current Architecture Readiness:
-
-* Metadata-storage separation already supports future expansion
-* Storage provider abstraction supports future multi-disk orchestration
-* Ownership model already compatible with multi-user quota enforcement
-
----
-
 # NEXT IMMEDIATE GOALS
 
-1. Batch file operations
-2. Trash recovery system
+1. Trash recovery system
+2. Restore deleted files endpoint
 3. Background cleanup architecture
 4. Upload recovery improvements
 5. Begin Flutter client initialization
@@ -418,3 +288,4 @@ Current Architecture Readiness:
 * File operations secured through ownership-based authorization
 * Navigation APIs modeled after real filesystem traversal
 * Soft-delete chosen over immediate hard delete
+* Batch operations designed with partial-success semantics

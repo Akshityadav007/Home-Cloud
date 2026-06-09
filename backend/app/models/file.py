@@ -4,7 +4,8 @@ from sqlalchemy import (
     String,
     ForeignKey,
     BigInteger,
-    DateTime
+    DateTime,
+    Boolean
 )
 from sqlalchemy.sql import func
 from app.core.database import Base
@@ -66,4 +67,10 @@ class File(Base):
     deleted_at = Column(
         DateTime(timezone=True),
         nullable=True
+    )
+
+    is_permanent_delete = Column(
+        Boolean,
+        default=False,
+        nullable=False
     )

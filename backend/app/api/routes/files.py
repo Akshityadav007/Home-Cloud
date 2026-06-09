@@ -16,6 +16,12 @@ from app.services.file_service import (
 )
 from typing import Optional
 from fastapi.responses import StreamingResponse
+from app.schemas.batch import (
+    BatchFileOperationRequest,
+    BatchDeleteResponse,
+    BatchRestoreResponse,
+    BatchPermanentDeleteResponse
+)
 
 
 router = APIRouter()
@@ -30,10 +36,10 @@ def get_files(
     current_user: User = Depends(get_current_user)
     ):
 
-    return FileService.get_user_files(
-        db,
-        current_user
-    )
+    return FileService.get_user_files(db, current_user)
+
+
+# upload
 
 @router.post(
     "/upload",
@@ -72,6 +78,118 @@ def upload_multiple_files(
     )
 
 
+# search
+
+@router.get(
+    "/search",
+    response_model=list[FileResponse]
+)
+def search_files(
+    q: str = Query(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.search_files(db, current_user, q)
+
+
+# delete and recovery
+
+@router.get(
+    "/trash",
+    response_model=list[FileResponse]
+)
+def get_deleted_files(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.get_deleted_files(db, current_user)
+
+@router.post(
+    "/batch-delete",
+    response_model=BatchDeleteResponse
+)
+def batch_delete_files(
+    request: BatchFileOperationRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+    return FileService.batch_delete_files(
+        db=db,
+        file_ids=request.file_ids,
+        current_user=current_user
+    )
+
+@router.post(
+    "/batch-restore",
+    response_model=BatchRestoreResponse
+)
+def restore_multiple_files(
+    request: BatchFileOperationRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.restore_multiple_files(
+        db,
+        request.file_ids,
+        current_user
+    )
+
+
+@router.post(
+    "/{file_id}/restore",
+    response_model=FileResponse
+)
+def restore_file(
+    file_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.restore_file(
+        db,
+        file_id,
+        current_user
+    )
+
+@router.post(
+    "/batch-permanent-delete",
+    response_model=BatchPermanentDeleteResponse
+)
+def batch_permanently_delete_files(
+    request: BatchFileOperationRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.batch_permanently_delete_files(
+        db,
+        request.file_ids,
+        current_user
+    )
+
+@router.post(
+    "/{file_id}/permanent-delete",
+    response_model=FileResponse
+)
+def permanently_delete_file(
+    file_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.permanently_delete_file(
+        db,
+        file_id,
+        current_user
+    )
+
+
+
+# download
+
 @router.get("/{file_id}/download")
 def download_file(
     file_id: int,
@@ -104,19 +222,3 @@ def delete_file(
     ):
 
     return FileService.delete_file(db, file_id, current_user)
-
-@router.get(
-    "/search",
-    response_model=list[FileResponse]
-)
-def search_files(
-    q: str = Query(...),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-    ):
-
-    return FileService.search_files(db, current_user, q)
-
-
-
-    
