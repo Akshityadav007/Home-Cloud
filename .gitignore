@@ -2,6 +2,10 @@
 __pycache__/
 *.pyc
 .venv/
+.venv-*/
+.python/
+*.nupkg
+test.db
 
 # Node
 node_modules/

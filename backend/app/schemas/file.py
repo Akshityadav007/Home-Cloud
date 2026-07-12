@@ -1,9 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
 
 class FileResponse(BaseModel):
+
+    model_config = ConfigDict(from_attributes=True)
 
     id: int
     original_filename: str
@@ -13,7 +15,3 @@ class FileResponse(BaseModel):
     folder_id: Optional[int]
     created_at: datetime
     checksum: str
-
-    class Config:
-        
-        from_attributes = True

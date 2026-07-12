@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from typing import Optional
 
@@ -12,6 +12,8 @@ class CreateFolderRequest(BaseModel):
 
 class FolderResponse(BaseModel):
 
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
 
     name: str
@@ -19,7 +21,3 @@ class FolderResponse(BaseModel):
     owner_id: int
 
     parent_folder_id: Optional[int]
-
-    class Config:
-
-        from_attributes = True

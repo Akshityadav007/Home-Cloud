@@ -2,7 +2,11 @@ from fastapi import (
     HTTPException,
     UploadFile
 )
+from io import BytesIO
+from pathlib import Path
+import zipfile
 from sqlalchemy.orm import Session
+from app.core.config import settings
 from app.models.user import User
 from app.repositories.file_repository import FileRepository
 from app.repositories.folder_repository import FolderRepository
@@ -11,6 +15,16 @@ from app.storage.utils.file_utils import calculate_checksum
 
 
 class FileService:
+
+    @staticmethod
+    def _safe_original_filename(filename: str | None) -> str:
+
+        if not filename:
+            return "uploaded-file"
+
+        safe_name = Path(filename.replace("\\", "/")).name
+
+        return safe_name or "uploaded-file"
 
     @staticmethod
     def upload_file(
@@ -35,10 +49,14 @@ class FileService:
                     detail="Folder not found"
                 )
 
+        original_filename = FileService._safe_original_filename(
+            file.filename
+        )
+
         temp_filename = (
             StorageService.provider.save_temp_file(
                 file.file,
-                file.filename
+                original_filename
             )
         )
 
@@ -46,17 +64,42 @@ class FileService:
             calculate_checksum(file.file)
         )
 
+        if (
+            settings.MAX_UPLOAD_SIZE_BYTES > 0
+            and file_size > settings.MAX_UPLOAD_SIZE_BYTES
+        ):
+            StorageService.provider.delete_temp_file(temp_filename)
+            raise HTTPException(
+                status_code=413,
+                detail="File exceeds maximum upload size"
+            )
+
+        used_storage = FileRepository.get_used_storage_bytes(
+            db,
+            current_user.id
+        )
+
+        if (
+            settings.USER_STORAGE_QUOTA_BYTES > 0
+            and used_storage + file_size > settings.USER_STORAGE_QUOTA_BYTES
+        ):
+            StorageService.provider.delete_temp_file(temp_filename)
+            raise HTTPException(
+                status_code=413,
+                detail="User storage quota exceeded"
+            )
+
         storage_path = (
             StorageService.provider.move_temp_to_final(
                 temp_filename,
-                file.filename
+                original_filename
             )
         )
 
         saved_file = (
             FileRepository.create_file(
                 db=db,
-                original_filename=file.filename,
+                original_filename=original_filename,
                 storage_path=storage_path,
                 mime_type=file.content_type,
                 size_bytes=file_size,
@@ -115,6 +158,84 @@ class FileService:
         )
 
         return file, file_stream
+
+    @staticmethod
+    def get_archive_download(
+        db: Session,
+        file_ids: list[int],
+        current_user: User
+        ):
+
+        if not file_ids:
+            raise HTTPException(
+                status_code=400,
+                detail="At least one file is required"
+            )
+
+        files = FileRepository.get_user_files_by_ids(
+            db,
+            file_ids,
+            current_user.id
+        )
+
+        files_by_id = {
+            file.id: file
+            for file in files
+        }
+
+        missing = [
+            file_id
+            for file_id in file_ids
+            if file_id not in files_by_id
+        ]
+
+        if missing:
+            raise HTTPException(
+                status_code=404,
+                detail="One or more files were not found"
+            )
+
+        archive = BytesIO()
+        used_names = set()
+
+        with zipfile.ZipFile(
+            archive,
+            mode="w",
+            compression=zipfile.ZIP_DEFLATED
+        ) as zip_archive:
+            for file_id in file_ids:
+                file = files_by_id[file_id]
+
+                if not StorageService.provider.file_exists(
+                    file.storage_path
+                ):
+                    raise HTTPException(
+                        status_code=404,
+                        detail="Physical file missing"
+                    )
+
+                archive_name = file.original_filename
+                stem = Path(archive_name).stem
+                suffix = Path(archive_name).suffix
+                counter = 1
+
+                while archive_name in used_names:
+                    archive_name = f"{stem} ({counter}){suffix}"
+                    counter += 1
+
+                used_names.add(archive_name)
+
+                with StorageService.provider.open_file(
+                    file.storage_path
+                ) as file_stream:
+                    zip_archive.writestr(
+                        archive_name,
+                        file_stream.read()
+                    )
+
+        archive.seek(0)
+
+        return archive
 
     @staticmethod
     def delete_file(
@@ -370,4 +491,28 @@ class FileService:
             "failed": failed
         }
 
-        
+    @staticmethod
+    def cleanup_permanently_deleted_files(
+        db: Session,
+        current_user: User
+        ):
+
+        files = FileRepository.get_permanently_deleted_files(
+            db,
+            current_user.id
+        )
+
+        removed = []
+        missing = []
+
+        for file in files:
+            if StorageService.provider.file_exists(file.storage_path):
+                StorageService.provider.delete_file(file.storage_path)
+                removed.append(file.id)
+            else:
+                missing.append(file.id)
+
+        return {
+            "removed": removed,
+            "missing": missing
+        }

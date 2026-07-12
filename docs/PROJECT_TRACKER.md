@@ -5,10 +5,10 @@
 # CURRENT STATUS
 
 Project Phase:
-RECURSIVE STORAGE LIFECYCLE FOUNDATION
+BACKEND MVP COMPLETE
 
 Current Focus:
-Recursive folder lifecycle correctness + regression protection
+Backend hardening, regression protection, and Flutter app handoff
 
 Last Updated:
 2026-07-12
@@ -204,6 +204,12 @@ Last Updated:
 * [x] Login lifecycle tests created
 * [x] Database reset strategy implemented
 * [x] Initial regression testing foundation established
+* [x] Upload lifecycle tests
+* [x] Ownership isolation tests
+* [x] Recursive folder lifecycle tests
+* [x] Archive download tests
+* [x] Upload limit and quota tests
+* [x] Cleanup lifecycle tests
 
 ---
 
@@ -220,11 +226,13 @@ Last Updated:
 
 # IN PROGRESS
 
-## Runtime & Application Surface
+## Flutter Application Surface
 
-* [ ] Repair/recreate local Python virtual environment
-* [ ] Decide whether frontend remains Flutter-only or also needs a web app
-* [ ] Add full frontend application scaffold
+* [ ] Flutter mobile application initialization
+* [ ] Authentication screens
+* [ ] File explorer UI
+* [ ] Upload progress UI
+* [ ] Folder navigation UI
 
 ---
 
@@ -251,16 +259,16 @@ Last Updated:
 * [ ] Chunked uploads
 * [ ] Resumable uploads
 * [x] File checksums
-* [ ] Storage quotas
-* [ ] Storage cleanup jobs
+* [x] Storage quotas
+* [x] Storage cleanup jobs
 * [ ] Thumbnail generation
-* [ ] Move storage root path into centralized config
+* [x] Move storage root path into centralized config
 * [x] Temporary upload staging system
 * [ ] Orphan file cleanup process
 * [ ] Multi-disk storage orchestration
 * [ ] Background consistency repair jobs
-* [ ] Multiple file download system
-* [ ] Zip archive streaming
+* [x] Multiple file download system
+* [x] Zip archive streaming
 * [ ] Temporary archive cleanup jobs
 * [x] Recursive folder lifecycle engine
 
@@ -274,7 +282,7 @@ Last Updated:
 * [ ] Permission system
 * [ ] File access auditing
 * [ ] Rate limiting
-* [ ] Upload validation
+* [x] Upload validation
 * [ ] Malware scanning
 * [ ] JWT secret hardening
 
@@ -309,11 +317,11 @@ Last Updated:
 
 # NEXT IMMEDIATE GOALS
 
-1. Repair/recreate the local backend virtual environment
-2. Run full backend regression suite
-3. Upload lifecycle tests
-4. Ownership isolation tests
-5. Background cleanup workers
+1. Build Flutter mobile application
+2. Add deployment-specific production secrets
+3. Configure HTTPS/reverse proxy for hosted backend
+4. Add optional malware scanning
+5. Add optional thumbnail/background worker pipeline
 
 ---
 

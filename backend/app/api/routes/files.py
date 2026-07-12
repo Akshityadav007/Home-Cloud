@@ -78,6 +78,31 @@ def upload_multiple_files(
     )
 
 
+# archive download
+
+@router.post("/download-archive")
+def download_archive(
+    request: BatchFileOperationRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    archive = FileService.get_archive_download(
+        db,
+        request.file_ids,
+        current_user
+    )
+
+    return StreamingResponse(
+        archive,
+        media_type="application/zip",
+        headers={
+            "Content-Disposition":
+            'attachment; filename="home-cloud-files.zip"'
+        }
+    )
+
+
 # search
 
 @router.get(
@@ -167,6 +192,17 @@ def batch_permanently_delete_files(
     return FileService.batch_permanently_delete_files(
         db,
         request.file_ids,
+        current_user
+    )
+
+@router.post("/cleanup/permanent-deletes")
+def cleanup_permanently_deleted_files(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FileService.cleanup_permanently_deleted_files(
+        db,
         current_user
     )
 

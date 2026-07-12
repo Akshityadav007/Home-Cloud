@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.models.file import File
 from datetime import datetime, timezone
 
@@ -61,6 +62,32 @@ class FileRepository:
             File.owner_id == owner_id,
             File.deleted_at.is_(None)
         ).first()
+
+    @staticmethod
+    def get_user_files_by_ids(
+        db: Session,
+        file_ids: list[int],
+        owner_id: int
+        ):
+
+        return db.query(File).filter(
+            File.id.in_(file_ids),
+            File.owner_id == owner_id,
+            File.deleted_at.is_(None)
+        ).all()
+
+    @staticmethod
+    def get_used_storage_bytes(
+        db: Session,
+        owner_id: int
+        ):
+
+        return db.query(
+            func.coalesce(func.sum(File.size_bytes), 0)
+        ).filter(
+            File.owner_id == owner_id,
+            File.is_permanent_delete == False
+        ).scalar()
 
     @staticmethod
     def soft_delete_file(
@@ -174,3 +201,14 @@ class FileRepository:
         db.refresh(file)
 
         return file
+
+    @staticmethod
+    def get_permanently_deleted_files(
+        db: Session,
+        owner_id: int
+        ):
+
+        return db.query(File).filter(
+            File.owner_id == owner_id,
+            File.is_permanent_delete == True
+        ).all()

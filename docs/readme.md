@@ -1,6 +1,8 @@
-To run the website use:
-1) Frontend - This will be an app.
-2) Backend - cd backend > uvicorn app.main:app --reload
+To run the backend server:
+1) Start infrastructure: `docker compose up -d`
+2) Backend: `cd backend`
+3) Activate a working venv.
+4) Run: `uvicorn app.main:app --reload`
 
 To generate JWT secret key use:
 - python -c "import secrets; print(secrets.token_hex(32))"
@@ -50,6 +52,10 @@ Primary goals:
 - Authenticated folder and file APIs
 - Soft-delete, restore, and permanent-delete lifecycle for files
 - Recursive soft-delete, restore, and permanent-delete lifecycle for folders
+- Multi-file upload and ZIP archive download
+- Configurable max upload size and per-user storage quota
+- Physical cleanup endpoint for permanently deleted files
+- Backend regression test suite
 
 ## Folder Lifecycle API
 
@@ -57,6 +63,11 @@ Primary goals:
 - `GET /api/v1/folders/trash` lists deleted folders that are still recoverable.
 - `POST /api/v1/folders/{folder_id}/restore` restores a deleted folder subtree and contained files.
 - `POST /api/v1/folders/{folder_id}/permanent-delete` marks a folder subtree and contained files as permanently deleted.
+
+## File Utility API
+
+- `POST /api/v1/files/download-archive` streams selected files as a ZIP archive.
+- `POST /api/v1/files/cleanup/permanent-deletes` removes physical files already marked as permanently deleted.
 
 ---
 

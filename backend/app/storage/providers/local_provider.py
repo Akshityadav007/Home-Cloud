@@ -3,6 +3,7 @@ import shutil
 import uuid
 
 from pathlib import Path
+from app.core.config import settings
 
 from app.storage.interfaces.storage_provider import (
     StorageProvider
@@ -11,22 +12,22 @@ from app.storage.interfaces.storage_provider import (
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent
 
-BASE_STORAGE_PATH = (
-    BASE_DIR / "storage" / "files"
-)
-BASE_STORAGE_PATH.mkdir(
-    parents=True,
-    exist_ok=True
-)
+def _resolve_storage_path(path_value: str) -> Path:
+    path = Path(path_value)
 
-TEMP_STORAGE_PATH = (
-    BASE_DIR / "storage" / "temp"
-)
+    if not path.is_absolute():
+        path = BASE_DIR / path
 
-TEMP_STORAGE_PATH.mkdir(
-    parents=True,
-    exist_ok=True
-)
+    path.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    return path
+
+
+BASE_STORAGE_PATH = _resolve_storage_path(settings.STORAGE_ROOT_PATH)
+TEMP_STORAGE_PATH = _resolve_storage_path(settings.TEMP_STORAGE_PATH)
 
 class LocalStorageProvider(StorageProvider):
 
@@ -125,3 +126,20 @@ class LocalStorageProvider(StorageProvider):
             f"{second_level}/"
             f"{generated_filename}"
         )
+
+    def temp_file_exists(self, filename: str) -> bool:
+        return (TEMP_STORAGE_PATH / filename).exists()
+
+    def delete_temp_file(self, filename: str):
+        path = TEMP_STORAGE_PATH / filename
+        if path.exists():
+            os.remove(path)
+
+    def list_storage_files(self) -> list[str]:
+        files = []
+
+        for path in BASE_STORAGE_PATH.rglob("*"):
+            if path.is_file():
+                files.append(path.relative_to(BASE_STORAGE_PATH).as_posix())
+
+        return files
