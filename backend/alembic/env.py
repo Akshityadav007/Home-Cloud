@@ -22,6 +22,13 @@ from app.core.database import Base
 from app.models.user import User
 from app.models.folder import Folder 
 from app.models.file import File
+from app.models.audit_log import AuditLog
+from app.models.file_version import FileVersion
+from app.models.share import Share
+from app.models.upload_session import UploadSession
+from app.models.device import Device
+from app.models.sync_event import SyncEvent
+from app.models.storage_volume import StorageVolume
 
 target_metadata = Base.metadata
 

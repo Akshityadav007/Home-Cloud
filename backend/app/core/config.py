@@ -13,5 +13,12 @@ class Settings(BaseSettings):
     TEMP_STORAGE_PATH: str = "storage/temp"
     MAX_UPLOAD_SIZE_BYTES: int = 0
     USER_STORAGE_QUOTA_BYTES: int = 0
+    RATE_LIMIT_REQUESTS: int = 120
+    RATE_LIMIT_WINDOW_SECONDS: int = 60
+    UPLOAD_SESSION_TTL_HOURS: int = 24
+    BLOCKED_UPLOAD_EXTENSIONS: str = ".exe,.bat,.cmd,.ps1,.scr,.vbs,.js"
+    CLAMSCAN_PATH: str = ""
+    REQUIRE_STRONG_JWT_SECRET: bool = False
+    THUMBNAIL_MAX_SIZE: int = 256
 
 settings = Settings()

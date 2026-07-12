@@ -212,3 +212,14 @@ class FileRepository:
             File.owner_id == owner_id,
             File.is_permanent_delete == True
         ).all()
+
+    @staticmethod
+    def get_all_non_permanent_user_files(
+        db: Session,
+        owner_id: int
+        ):
+
+        return db.query(File).filter(
+            File.owner_id == owner_id,
+            File.is_permanent_delete == False
+        ).all()

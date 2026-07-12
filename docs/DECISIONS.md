@@ -247,3 +247,48 @@ Consequences:
 
 Future Reconsideration:
 Retention-policy-based cleanup scheduler later.
+
+---
+
+## Decision 012
+
+Date:
+2026-07-12
+
+Title:
+Use Owned Network Access Instead of Managed Relay Services
+
+Reason:
+Remote access should be inspectable and owned end-to-end. A self-managed WireGuard VPN or a self-hosted HTTPS reverse proxy keeps the network path understandable and controlled.
+
+Consequences:
+
+* No dependency on closed relay infrastructure
+* Clearer security model
+* More setup responsibility for DNS, firewall, keys, and certificates
+
+Future Reconsideration:
+Managed relay tools can be reconsidered only if convenience becomes more important than full setup visibility.
+
+---
+
+## Decision 013
+
+Date:
+2026-07-12
+
+Title:
+Use Mini PC With External SSD and HDD Backup for Production
+
+Reason:
+Raspberry Pi pricing is less attractive in 2026, and a used mini PC provides better CPU, RAM, storage, and enclosure value. Live storage will use an external SSD; cheapest backup storage will use an external HDD.
+
+Consequences:
+
+* Better price/performance than a high-end Raspberry Pi kit
+* Easier replacement and maintenance
+* USB-attached storage is simple to operate
+* UPS is recommended to reduce corruption risk during power loss
+
+Future Reconsideration:
+Move to NAS-grade hardware if storage, redundancy, or uptime requirements grow.

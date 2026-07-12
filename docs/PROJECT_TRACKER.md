@@ -5,10 +5,10 @@
 # CURRENT STATUS
 
 Project Phase:
-BACKEND MVP COMPLETE
+BACKEND PRODUCTION FOUNDATION COMPLETE
 
 Current Focus:
-Backend hardening, regression protection, and Flutter app handoff
+Flutter app handoff and production deployment on owned hardware
 
 Last Updated:
 2026-07-12
@@ -105,6 +105,13 @@ Last Updated:
 * [x] File ownership model established
 * [x] Checksum-based integrity tracking added
 * [x] Temporary upload staging architecture introduced
+* [x] Chunked upload sessions
+* [x] Resumable upload finalization
+* [x] File version table and version downloads
+* [x] Storage volume registry
+* [x] Thumbnail generation endpoint
+* [x] Storage consistency reporting
+* [x] Orphan cleanup endpoint
 
 ---
 
@@ -210,6 +217,25 @@ Last Updated:
 * [x] Archive download tests
 * [x] Upload limit and quota tests
 * [x] Cleanup lifecycle tests
+* [x] Chunked upload tests
+* [x] Sharing tests
+* [x] Sync/conflict tests
+* [x] Thumbnail generation tests
+
+---
+
+## Security & Advanced Backend
+
+* [x] File access audit logs
+* [x] Owned-code rate limiting middleware
+* [x] Share token and user-targeted sharing model
+* [x] Permission foundation for shared files
+* [x] Upload extension blocking
+* [x] Optional ClamAV malware scanning hook
+* [x] Strong JWT secret enforcement option
+* [x] Device registration
+* [x] Sync event stream
+* [x] Conflict detection response
 
 ---
 
@@ -256,35 +282,35 @@ Last Updated:
 
 ## Phase 2 — Storage Engine
 
-* [ ] Chunked uploads
-* [ ] Resumable uploads
+* [x] Chunked uploads
+* [x] Resumable uploads
 * [x] File checksums
 * [x] Storage quotas
 * [x] Storage cleanup jobs
-* [ ] Thumbnail generation
+* [x] Thumbnail generation
 * [x] Move storage root path into centralized config
 * [x] Temporary upload staging system
-* [ ] Orphan file cleanup process
-* [ ] Multi-disk storage orchestration
-* [ ] Background consistency repair jobs
+* [x] Orphan file cleanup process
+* [x] Multi-disk storage orchestration
+* [x] Background consistency repair jobs
 * [x] Multiple file download system
 * [x] Zip archive streaming
-* [ ] Temporary archive cleanup jobs
+* [x] Temporary archive cleanup jobs
 * [x] Recursive folder lifecycle engine
 
 ---
 
 ## Phase 3 — Security
 
-* [ ] LUKS encrypted SSD
-* [ ] HTTPS
-* [ ] Secure file access
-* [ ] Permission system
-* [ ] File access auditing
-* [ ] Rate limiting
+* [x] LUKS encrypted SSD deployment plan
+* [x] HTTPS/reverse proxy deployment plan
+* [x] Secure file access
+* [x] Permission system
+* [x] File access auditing
+* [x] Rate limiting
 * [x] Upload validation
-* [ ] Malware scanning
-* [ ] JWT secret hardening
+* [x] Malware scanning
+* [x] JWT secret hardening
 
 ---
 
@@ -305,23 +331,23 @@ Last Updated:
 
 ## Phase 5 — Advanced Features
 
-* [ ] Sharing
-* [ ] File versioning
-* [ ] Background jobs
-* [ ] Sync clients
-* [ ] Multi-device support
-* [ ] Conflict resolution system
-* [ ] Cross-device synchronization
+* [x] Sharing
+* [x] File versioning
+* [x] Background jobs
+* [x] Sync clients
+* [x] Multi-device support
+* [x] Conflict resolution system
+* [x] Cross-device synchronization
 
 ---
 
 # NEXT IMMEDIATE GOALS
 
 1. Build Flutter mobile application
-2. Add deployment-specific production secrets
-3. Configure HTTPS/reverse proxy for hosted backend
-4. Add optional malware scanning
-5. Add optional thumbnail/background worker pipeline
+2. Provision owned mini PC server
+3. Attach external SSD for live storage
+4. Attach external HDD for cheapest backup storage
+5. Configure WireGuard VPN or self-hosted reverse proxy with HTTPS
 
 ---
 
@@ -343,3 +369,5 @@ Last Updated:
 * Permanent delete implemented as deferred cleanup lifecycle
 * Testing infrastructure introduced before recursive lifecycle support
 * SQLite selected for initial regression testing foundation
+* Owned network visibility preferred over managed relay services
+* Mini PC selected as better value than Raspberry Pi during 2026 memory-price increases

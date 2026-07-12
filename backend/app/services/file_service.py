@@ -10,6 +10,9 @@ from app.core.config import settings
 from app.models.user import User
 from app.repositories.file_repository import FileRepository
 from app.repositories.folder_repository import FolderRepository
+from app.repositories.advanced_repository import SyncRepository, VersionRepository
+from app.services.advanced_service import AdvancedService
+from app.services.security_service import MalwareScanner
 from app.services.storage_service import StorageService
 from app.storage.utils.file_utils import calculate_checksum
 
@@ -60,6 +63,15 @@ class FileService:
             )
         )
 
+        try:
+            MalwareScanner.scan_or_raise(
+                StorageService.provider.get_temp_file_path(temp_filename),
+                original_filename
+            )
+        except HTTPException:
+            StorageService.provider.delete_temp_file(temp_filename)
+            raise
+
         checksum, file_size = (
             calculate_checksum(file.file)
         )
@@ -109,6 +121,28 @@ class FileService:
             )
         )
 
+        VersionRepository.create_version(
+            db,
+            saved_file.id,
+            storage_path,
+            file_size,
+            checksum
+        )
+        SyncRepository.create_event(
+            db,
+            current_user.id,
+            "created",
+            "file",
+            saved_file.id
+        )
+        AdvancedService.create_audit(
+            db,
+            current_user.id,
+            "file_uploaded",
+            "file",
+            saved_file.id
+        )
+
         return saved_file
 
     @staticmethod
@@ -155,6 +189,14 @@ class FileService:
             StorageService.provider.open_file(
                 file.storage_path
             )
+        )
+
+        AdvancedService.create_audit(
+            db,
+            current_user.id,
+            "file_downloaded",
+            "file",
+            file.id
         )
 
         return file, file_stream
@@ -260,6 +302,21 @@ class FileService:
         FileRepository.soft_delete_file(
             db,
             file
+        )
+
+        SyncRepository.create_event(
+            db,
+            current_user.id,
+            "deleted",
+            "file",
+            file.id
+        )
+        AdvancedService.create_audit(
+            db,
+            current_user.id,
+            "file_deleted",
+            "file",
+            file.id
         )
 
         return {
@@ -380,10 +437,18 @@ class FileService:
                 detail="Deleted file not found"
             )
 
-        return FileRepository.restore_file(
+        restored = FileRepository.restore_file(
             db,
             file
         )
+        SyncRepository.create_event(
+            db,
+            current_user.id,
+            "restored",
+            "file",
+            file.id
+        )
+        return restored
 
     @staticmethod
     def restore_multiple_files(
@@ -448,10 +513,18 @@ class FileService:
                 detail="File not found"
             )
 
-        return FileRepository.mark_permanent_delete(
+        deleted_file = FileRepository.mark_permanent_delete(
             db,
             file
         )
+        SyncRepository.create_event(
+            db,
+            current_user.id,
+            "permanent_deleted",
+            "file",
+            file.id
+        )
+        return deleted_file
 
     @staticmethod
     def batch_permanently_delete_files(

@@ -44,3 +44,27 @@ class StorageProvider(ABC):
     @abstractmethod
     def list_storage_files(self) -> list[str]:
         pass
+
+    @abstractmethod
+    def get_temp_file_path(self, filename: str) -> str:
+        pass
+
+    @abstractmethod
+    def open_temp_file(self, filename: str):
+        pass
+
+    @abstractmethod
+    def save_upload_chunk(self, session_id: int, chunk_index: int, file_data):
+        pass
+
+    @abstractmethod
+    def assemble_upload_chunks(self, session_id: int, total_chunks: int) -> str:
+        pass
+
+    @abstractmethod
+    def save_thumbnail(self, file_storage_path: str, thumbnail_data):
+        pass
+
+    @abstractmethod
+    def list_temp_files(self) -> list[str]:
+        pass
