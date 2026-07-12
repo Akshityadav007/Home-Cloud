@@ -5,13 +5,13 @@
 # CURRENT STATUS
 
 Project Phase:
-STORAGE LIFECYCLE & TESTING FOUNDATION
+RECURSIVE STORAGE LIFECYCLE FOUNDATION
 
 Current Focus:
-Lifecycle correctness + regression protection + recursive lifecycle planning
+Recursive folder lifecycle correctness + regression protection
 
 Last Updated:
-2026-06-08
+2026-07-12
 
 ---
 
@@ -20,7 +20,7 @@ Last Updated:
 ## Project Initialization
 
 * [x] Root project structure created
-* [x] Frontend initialized using Next.js
+* [x] Frontend direction selected
 * [x] Backend initialized using FastAPI
 * [x] Docker Compose configured
 * [x] PostgreSQL container setup
@@ -207,16 +207,24 @@ Last Updated:
 
 ---
 
-# IN PROGRESS
-
 ## Recursive Lifecycle Architecture
 
-* [ ] Folder deletion lifecycle planning
-* [ ] Recursive traversal helpers
-* [ ] Recursive restore lifecycle
-* [ ] Recursive permanent delete lifecycle
-* [ ] Folder trash architecture
-* [ ] Recursive ownership validation
+* [x] Folder deletion lifecycle planning
+* [x] Recursive traversal helpers
+* [x] Recursive restore lifecycle
+* [x] Recursive permanent delete lifecycle
+* [x] Folder trash architecture
+* [x] Recursive ownership validation
+
+---
+
+# IN PROGRESS
+
+## Runtime & Application Surface
+
+* [ ] Repair/recreate local Python virtual environment
+* [ ] Decide whether frontend remains Flutter-only or also needs a web app
+* [ ] Add full frontend application scaffold
 
 ---
 
@@ -234,6 +242,7 @@ Last Updated:
 * [x] Trash recovery
 * [x] Batch restore
 * [x] Permanent delete lifecycle
+* [x] Recursive folder lifecycle engine
 
 ---
 
@@ -253,7 +262,7 @@ Last Updated:
 * [ ] Multiple file download system
 * [ ] Zip archive streaming
 * [ ] Temporary archive cleanup jobs
-* [ ] Recursive folder lifecycle engine
+* [x] Recursive folder lifecycle engine
 
 ---
 
@@ -300,10 +309,10 @@ Last Updated:
 
 # NEXT IMMEDIATE GOALS
 
-1. Lifecycle regression tests
-2. Upload lifecycle tests
-3. Ownership isolation tests
-4. Recursive folder lifecycle architecture
+1. Repair/recreate the local backend virtual environment
+2. Run full backend regression suite
+3. Upload lifecycle tests
+4. Ownership isolation tests
 5. Background cleanup workers
 
 ---

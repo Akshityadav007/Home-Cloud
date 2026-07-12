@@ -66,6 +66,20 @@ def get_root_contents(
         current_user
     )
 
+@router.get(
+    "/trash",
+    response_model=list[FolderResponse]
+)
+def get_deleted_folders(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FolderService.get_deleted_folders(
+        db,
+        current_user
+    )
+
 
 @router.get(
     "/{folder_id}/contents",
@@ -81,4 +95,52 @@ def get_folder_contents(
         db,
         current_user,
         folder_id
+    )
+
+
+@router.post(
+    "/{folder_id}/restore",
+    response_model=FolderResponse
+)
+def restore_folder(
+    folder_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FolderService.restore_folder(
+        db,
+        folder_id,
+        current_user
+    )
+
+
+@router.post(
+    "/{folder_id}/permanent-delete",
+    response_model=FolderResponse
+)
+def permanently_delete_folder(
+    folder_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FolderService.permanently_delete_folder(
+        db,
+        folder_id,
+        current_user
+    )
+
+
+@router.delete("/{folder_id}")
+def delete_folder(
+    folder_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+    ):
+
+    return FolderService.delete_folder(
+        db,
+        folder_id,
+        current_user
     )

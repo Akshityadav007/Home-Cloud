@@ -1,5 +1,5 @@
 To run the website use:
-1) Frontend - cd frontend > npm run dev
+1) Frontend - This will be an app.
 2) Backend - cd backend > uvicorn app.main:app --reload
 
 To generate JWT secret key use:
@@ -31,8 +31,7 @@ Primary goals:
 - Alembic
 
 ### Frontend
-- Next.js
-- TailwindCSS
+- Flutter mobile app planned
 
 ### Infrastructure
 - Docker Compose
@@ -44,11 +43,20 @@ Primary goals:
 ## Current Features
 
 - Backend initialized
-- Frontend initialized
 - PostgreSQL integration
 - Redis integration
 - Alembic migrations
 - User model
+- Authenticated folder and file APIs
+- Soft-delete, restore, and permanent-delete lifecycle for files
+- Recursive soft-delete, restore, and permanent-delete lifecycle for folders
+
+## Folder Lifecycle API
+
+- `DELETE /api/v1/folders/{folder_id}` soft-deletes a folder subtree and contained files.
+- `GET /api/v1/folders/trash` lists deleted folders that are still recoverable.
+- `POST /api/v1/folders/{folder_id}/restore` restores a deleted folder subtree and contained files.
+- `POST /api/v1/folders/{folder_id}/permanent-delete` marks a folder subtree and contained files as permanently deleted.
 
 ---
 

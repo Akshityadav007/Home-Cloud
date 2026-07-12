@@ -2,7 +2,9 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
-    ForeignKey
+    ForeignKey,
+    DateTime,
+    Boolean
 )
 
 from sqlalchemy.orm import relationship
@@ -35,6 +37,17 @@ class Folder(Base):
         Integer,
         ForeignKey("folders.id"),
         nullable=True
+    )
+
+    deleted_at = Column(
+        DateTime(timezone=True),
+        nullable=True
+    )
+
+    is_permanent_delete = Column(
+        Boolean,
+        default=False,
+        nullable=False
     )
 
     parent = relationship(

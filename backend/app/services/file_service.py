@@ -22,9 +22,10 @@ class FileService:
 
         if folder_id is not None:
 
-            folder = FolderRepository.get_by_id(
+            folder = FolderRepository.get_active_user_folder_by_id(
                 db,
-                folder_id
+                folder_id,
+                current_user.id
             )
 
             if not folder:
@@ -32,13 +33,6 @@ class FileService:
                 raise HTTPException(
                     status_code=404,
                     detail="Folder not found"
-                )
-
-            if folder.owner_id != current_user.id:
-
-                raise HTTPException(
-                    status_code=403,
-                    detail="Access denied"
                 )
 
         temp_filename = (

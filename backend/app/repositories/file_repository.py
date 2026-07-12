@@ -98,6 +98,19 @@ class FileRepository:
         ).all()
 
     @staticmethod
+    def get_folder_files_for_lifecycle(
+        db: Session,
+        owner_id: int,
+        folder_id: int
+        ):
+
+        return db.query(File).filter(
+            File.owner_id == owner_id,
+            File.folder_id == folder_id,
+            File.is_permanent_delete == False
+        ).all()
+
+    @staticmethod
     def search_files(
         db: Session,
         owner_id: int,
