@@ -10,6 +10,9 @@ test.db
 # Node
 node_modules/
 
+# docs
+docs/
+
 # Env
 .env
 
